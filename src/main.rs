@@ -1,4 +1,4 @@
-use git2::Repository;
+use git2;
 use std::env;
 
 fn get_current_working_dir() -> String {
@@ -11,7 +11,7 @@ fn get_current_working_dir() -> String {
 
 fn main() {
     let cwd = get_current_working_dir();
-    let repo = match Repository::init(cwd) {
+    let repo = match git2::Repository::init(cwd) {
         Ok(repo) => repo,
         Err(e) => panic!("failed to init: {}", e),
     };
