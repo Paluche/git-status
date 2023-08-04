@@ -1,5 +1,16 @@
 use git2;
 use std::env;
+use clap::Parser;
+
+/// Custom git-status
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+
+struct Args {
+    /// Path to the repository to get the status
+    #[arg(short = 'C')]
+    path: Option<String>,
+}
 
 fn get_current_working_dir() -> String {
     let res = env::current_dir();
@@ -78,8 +89,14 @@ fn status_to_string(status : git2::Status,
 }
 
 fn main() {
-    let cwd = get_current_working_dir();
-    let repo = match git2::Repository::init(cwd) {
+    let args = Args::parse();
+
+    let path = match args.path {
+        None => get_current_working_dir(),
+        Some(path) => path,
+    };
+
+    let repo = match git2::Repository::init(path) {
         Ok(repo) => repo,
         Err(e) => panic!("failed to init: {}", e),
     };
